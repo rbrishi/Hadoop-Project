@@ -1,0 +1,8 @@
+day 3
+-------------------
+In Hive, temporary table and  for  Creditcard table  and  load Creditcard CSV file
+
+-----------
+CREATE TEMPORARY TABLE CREDITCARD(TRAN_ID INT,TRAN_DATE DATE,CUST_ID BIGINT,CUST_CC_NO BIGINT,CUST_SSN BIGINT,BRANCH_CODE INT,TRAN_TYPE VARCHAR(15),TRAN_VALUE BIGINT) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+load data local inpath '/home/naveen/sourcelocal/Tran_creditcard.csv' into table CREDITCARD;
+SELECT * FROM CREDITCARD;

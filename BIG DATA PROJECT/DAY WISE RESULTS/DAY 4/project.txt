@@ -1,0 +1,17 @@
+day 4
+----------------------------------------------------------------
+query 7 -- In Hive create Tran_CreditCard as  External  table with partitioned by YEAR & MONTH and insert the data from the temporary table in item 6Note :
+----------------
+---CREATE EXTERNAL TABLE IF NOT EXISTS TRAN_CREDITCARD(TRAN_ID INT,CUST_ID BIGINT) PARTITIONED BY (TRAN_DATE varchar(20)) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+---INSERT OVERWRITE TABLE TRAN_CREDITCARD PARTITION (TRAN_DATE) SELECT TRAN_ID,CUST_ID,TRAN_DATE FROM CREDITCARD;
+---select * from tran_creditcard;
+
+----------------------------------------------------------------------------------------------------
+query 8--In Hive create a Targetdb 
+-----------------
+-----create database targetdb;
+
+
+----------------------------------------------------------------------------------------------------
+query 9----Goto Spark and process the data as per functional requirement 
+--------------

@@ -1,0 +1,35 @@
+Project 
+
+--2-----------Create a  local directory in  Cloudera Clone with name   Sourcelocal and  maintain all Customers, Branch and  CSV files
+-------mkdir sourcelocal
+------------------------------------------------------------------------------------------------------------------------------------------------
+--3-----------In  Hive  create Sourcedb
+------------
+       cd apache-hive-1.2.2-bin/bin
+       bash
+       hive
+hive<  create database sourcedb;
+       show databases;
+       use sourcedb;
+------------------------------------------------------------------------------------------------------------------------------------------------
+-4-----------In Hive Sourcedb, Create Managed tables for  Customers, Branch and load
+
+TABLE 1 CUSTOMER
+--
+CREATE TABLE CUSTOMERS(CUST_ID BIGINT,CUST_F_NAME VARCHAR(40),CUST_M_NAME VARCHAR(40),CUST_L_NAME VARCHAR(40),CUST_CC_NO BIGINT,CARD_TYPE VARCHAR(10),CARD_LIMIT BIGINT,CARD_END_DATE VARCHAR(10),CUST_SSN BIGINT,CUST_STREET VARCHAR(30),CUST_CITY VARCHAR(30),CUST_STATE VARCHAR(30),CUST_COUNTRY VARCHAR(30),CUST_ZIP VARCHAR(7),CUST_PHONE VARCHAR(15),CUST_EMAIL VARCHAR(40)) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+Load data local inpath '/home/naveen/sourcelocal/Customer.csv' into table CUSTOMERS;
+SELECT * FROM CUSTOMERS;
+--------------------------------------
+TABLE 2 BRANCH
+----
+CREATE TABLE BRANCH(BRANCH_CODE INT,BRANCH_NAME VARCHAR(20),BRANCH_STREET VARCHAR(20),BRANCH_CITY VARCHAR(20),BRANCH_STATE VARCHAR(20),BRANCH_ZIP INT,BRANCH_PHONE VARCHAR(20)) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+load data local inpath '/home/naveen/sourcelocal/Branch.csv' into table BRANCH;
+select * from BRANCH;
+--------------------------------------------------------------------------------------------------------------------------------------------
+--5---------In Hive, temporary table and  for  Creditcard table  and  load Creditcard CSV file
+
+TABLE 3 CREDITCARD
+---
+CREATE TEMPORARY TABLE CREDITCARD(TRAN_ID INT,TRAN_DATE DATE,CUST_ID BIGINT,CUST_CC_NO BIGINT,CUST_SSN BIGINT,BRANCH_CODE INT,TRAN_TYPE VARCHAR(15),TRAN_VALUE BIGINT) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+load data local inpath '/home/naveen/sourcelocal/Tran_creditcard.csv' into table CREDITCARD;
+SELECT * FROM CREDITCARD;

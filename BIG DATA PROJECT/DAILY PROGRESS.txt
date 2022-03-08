@@ -1,0 +1,71 @@
+
+Group 1
+
+Naveen Narayanappa
+Amit Kumar
+Sofia Roman
+Rishabh Bajpai
+
+
+
+
+                                                                       (Topic)
+
+                                              -----------------Creditcard Billing System-----------------
+
+                                                                      (Day 1)
+
+---------Discussion with team regarding project..
+---------We have gone through the contents given us.
+---------understood the project workflow.
+---------Discussed about the requirements of the projects.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                     
+                                             
+                                                                       (DAY 2)
+
+-----------Created the directory in local directory and loaded all the csv files inside the directory.
+-----------Connected to hive.
+------------Created the Database sourcedb and used that database.
+------------Created the tables customers,branch,creditcard.
+------------loaded the data from local to the created tables in hive.
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                                                                        (DAY 3)
+
+------Created the temporary table and loaded data in to the temporary table
+------went to study external table format and loading the data
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                                                                         (DAY 4)
+
+-------Created external tabele with partition and inserted data from the temporary table;
+-------Created the Database targetdb
+-------learnt about the Spark and started working on Spark
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                 
+                                                                         (DAY 5)
+
+-------Working on HIVE  and Creating all the needed requirements in the Hive 
+
+--------------------------------------
+
+--------Creating Presantation of the Project 
+--------Working on Hive and Spark
+--------Writing the remaining Quaries in the Hive and Seeing the Output
+--------checking whether the parquiet file format stored 
+--------reading all the files and checking results
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                                                                          (DAY 6)
+
+-------Completion of the Project 
+-------Creating neccesary documents 
+-------going throughout the design of project 
+-------submitted the Project to the Trainer
+----------------------------------------------------------------------------------------------------------------------------------------------------------------

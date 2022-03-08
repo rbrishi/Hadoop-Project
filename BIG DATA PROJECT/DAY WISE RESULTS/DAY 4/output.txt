@@ -1,0 +1,551 @@
+day 4
+
+--------------------
+ 
+ 7-------In Hive create Tran_CreditCard as  External  table with partitioned by YEAR & MONTH and insert the data from the temporary table in item 6Note 
+
+-------------------------
+hive> CREATE EXTERNAL TABLE IF NOT EXISTS TRAN_CREDITCARD(TRAN_ID INT,CUST_ID BIGINT) PARTITIONED BY (TRAN_DATE varchar(20)) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+OK
+Time taken: 0.117 seconds
+hive> INSERT OVERWRITE TABLE TRAN_CREDITCARD PARTITION (TRAN_DATE) SELECT TRAN_ID,CUST_ID,TRAN_DATE FROM CREDITCARD;
+Query ID = naveen_20220204151646_32b865f7-86c2-4e17-939a-f24faa596748
+Total jobs = 3
+Launching Job 1 out of 3
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1643872927059_0015, Tracking URL = http://naveen-VirtualBox:8088/proxy/application_1643872927059_0015/
+Kill Command = /home/naveen/hadoop-2.10.1/bin/hadoop job  -kill job_1643872927059_0015
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0
+2022-02-04 15:16:51,055 Stage-1 map = 0%,  reduce = 0%
+2022-02-04 15:17:03,390 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 3.25 sec
+MapReduce Total cumulative CPU time: 3 seconds 250 msec
+Ended Job = job_1643872927059_0015
+Stage-4 is selected by condition resolver.
+Stage-3 is filtered out by condition resolver.
+Stage-5 is filtered out by condition resolver.
+Moving data to: hdfs://localhost:9000/user/hive/warehouse/sourcedb.db/tran_creditcard/.hive-staging_hive_2022-02-04_15-16-46_727_7866086433901651159-1/-ext-10000
+Loading data to table sourcedb.tran_creditcard partition (tran_date=null)
+	 Time taken for load dynamic partitions : 3542
+	Loading partition {tran_date=2018-10-20}
+	Loading partition {tran_date=2017-08-01}
+	Loading partition {tran_date=2018-02-03}
+	Loading partition {tran_date=2018-04-12}
+	Loading partition {tran_date=2018-03-03}
+	Loading partition {tran_date=2018-07-03}
+	Loading partition {tran_date=2019-02-23}
+	Loading partition {tran_date=2018-09-12}
+	Loading partition {tran_date=2018-05-18}
+	Loading partition {tran_date=2016-02-05}
+	Loading partition {tran_date=2017-05-25}
+	Loading partition {tran_date=2018-03-31}
+	Loading partition {tran_date=2016-03-05}
+	Loading partition {tran_date=2018-12-01}
+	Loading partition {tran_date=2016-03-29}
+	Loading partition {tran_date=2017-06-17}
+	Loading partition {tran_date=2018-12-10}
+	Loading partition {tran_date=2018-08-02}
+	Loading partition {tran_date=2018-03-22}
+	Loading partition {tran_date=2017-05-17}
+	Loading partition {tran_date=2018-02-22}
+	Loading partition {tran_date=2018-09-02}
+	Loading partition {tran_date=2018-09-17}
+	Loading partition {tran_date=2018-12-30}
+	Loading partition {tran_date=2018-10-27}
+	Loading partition {tran_date=2018-08-13}
+	Loading partition {tran_date=2018-03-30}
+	Loading partition {tran_date=2018-12-17}
+	Loading partition {tran_date=2018-09-30}
+	Loading partition {tran_date=2019-02-22}
+	Loading partition {tran_date=2018-10-11}
+	Loading partition {tran_date=2019-11-04}
+	Loading partition {tran_date=2020-04-13}
+	Loading partition {tran_date=2017-04-01}
+	Loading partition {tran_date=2018-08-30}
+	Loading partition {tran_date=2018-07-30}
+	Loading partition {tran_date=2016-03-16}
+	Loading partition {tran_date=2018-03-20}
+	Loading partition {tran_date=2016-02-19}
+	Loading partition {tran_date=2017-05-12}
+	Loading partition {tran_date=2017-06-12}
+	Loading partition {tran_date=2018-04-11}
+	Loading partition {tran_date=2018-12-24}
+	Loading partition {tran_date=2018-11-15}
+	Loading partition {tran_date=2018-12-21}
+	Loading partition {tran_date=2019-01-09}
+	Loading partition {tran_date=2018-08-19}
+	Loading partition {tran_date=2018-06-20}
+	Loading partition {tran_date=2018-09-19}
+	Loading partition {tran_date=2018-11-21}
+	Loading partition {tran_date=2018-12-15}
+	Loading partition {tran_date=2018-08-11}
+	Loading partition {tran_date=2018-11-30}
+	Loading partition {tran_date=2018-12-09}
+	Loading partition {tran_date=2018-09-20}
+	Loading partition {tran_date=2018-11-24}
+	Loading partition {tran_date=2019-02-21}
+	Loading partition {tran_date=2018-09-05}
+	Loading partition {tran_date=2019-01-24}
+	Loading partition {tran_date=2018-03-25}
+	Loading partition {tran_date=2019-02-24}
+	Loading partition {tran_date=2016-02-03}
+	Loading partition {tran_date=2019-02-18}
+	Loading partition {tran_date=2018-09-22}
+	Loading partition {tran_date=2019-01-18}
+	Loading partition {tran_date=2017-06-09}
+	Loading partition {tran_date=2017-06-15}
+	Loading partition {tran_date=2018-12-02}
+	Loading partition {tran_date=2019-01-13}
+	Loading partition {tran_date=2017-04-10}
+	Loading partition {tran_date=2017-04-15}
+	Loading partition {tran_date=2016-01-27}
+	Loading partition {tran_date=2018-09-27}
+	Loading partition {tran_date=2018-10-02}
+	Loading partition {tran_date=2017-07-04}
+	Loading partition {tran_date=2018-10-23}
+	Loading partition {tran_date=2018-11-29}
+	Loading partition {tran_date=2018-08-15}
+	Loading partition {tran_date=2019-01-02}
+	Loading partition {tran_date=2019-01-11}
+	Loading partition {tran_date=2017-06-19}
+	Loading partition {tran_date=2019-02-08}
+	Loading partition {tran_date=2017-08-28}
+	Loading partition {tran_date=2018-04-24}
+	Loading partition {tran_date=2020-04-15}
+	Loading partition {tran_date=2017-05-19}
+	Loading partition {tran_date=2018-12-04}
+	Loading partition {tran_date=2016-02-17}
+	Loading partition {tran_date=2018-08-25}
+	Loading partition {tran_date=2018-05-05}
+	Loading partition {tran_date=2018-04-05}
+	Loading partition {tran_date=2018-10-22}
+	Loading partition {tran_date=2018-10-04}
+	Loading partition {tran_date=2016-03-31}
+	Loading partition {tran_date=2018-08-29}
+	Loading partition {tran_date=2016-01-12}
+	Loading partition {tran_date=2017-08-18}
+	Loading partition {tran_date=2018-06-01}
+	Loading partition {tran_date=2017-04-29}
+	Loading partition {tran_date=2018-12-28}
+	Loading partition {tran_date=2018-08-06}
+	Loading partition {tran_date=2018-11-28}
+	Loading partition {tran_date=2018-12-23}
+	Loading partition {tran_date=2018-08-24}
+	Loading partition {tran_date=2018-09-01}
+	Loading partition {tran_date=2017-07-30}
+	Loading partition {tran_date=2018-12-06}
+	Loading partition {tran_date=2018-10-03}
+	Loading partition {tran_date=2018-11-03}
+	Loading partition {tran_date=2018-09-07}
+	Loading partition {tran_date=2018-12-12}
+	Loading partition {tran_date=2020-05-10}
+	Loading partition {tran_date=2018-06-23}
+	Loading partition {tran_date=2018-07-07}
+	Loading partition {tran_date=2018-10-12}
+	Loading partition {tran_date=2018-09-26}
+	Loading partition {tran_date=2018-07-23}
+	Loading partition {tran_date=2018-09-23}
+	Loading partition {tran_date=2017-07-03}
+	Loading partition {tran_date=2018-08-23}
+	Loading partition {tran_date=2019-01-12}
+	Loading partition {tran_date=2018-03-07}
+	Loading partition {tran_date=2018-09-28}
+	Loading partition {tran_date=2019-02-12}
+	Loading partition {tran_date=2018-06-02}
+	Loading partition {tran_date=2018-03-13}
+	Loading partition {tran_date=2018-08-28}
+	Loading partition {tran_date=2018-12-27}
+	Loading partition {tran_date=2019-01-03}
+	Loading partition {tran_date=2018-12-19}
+	Loading partition {tran_date=2017-04-14}
+	Loading partition {tran_date=2018-04-10}
+	Loading partition {tran_date=2019-03-01}
+	Loading partition {tran_date=2020-04-23}
+	Loading partition {tran_date=2017-09-05}
+	Loading partition {tran_date=2018-06-10}
+	Loading partition {tran_date=2019-01-01}
+	Loading partition {tran_date=2020-05-23}
+	Loading partition {tran_date=2018-09-10}
+	Loading partition {tran_date=2018-12-08}
+	Loading partition {tran_date=2016-03-15}
+	Loading partition {tran_date=2018-03-21}
+	Loading partition {tran_date=2018-07-10}
+	Loading partition {tran_date=2018-08-10}
+	Loading partition {tran_date=2018-11-25}
+	Loading partition {tran_date=2018-07-21}
+	Loading partition {tran_date=2016-02-10}
+	Loading partition {tran_date=2018-12-14}
+	 Time taken for adding to write entity : 14
+Partition sourcedb.tran_creditcard{tran_date=2016-01-12} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2016-01-27} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2016-02-03} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2016-02-05} stats: [numFiles=1, numRows=3, totalSize=51, rawDataSize=48]
+Partition sourcedb.tran_creditcard{tran_date=2016-02-10} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2016-02-17} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2016-02-19} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2016-03-05} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2016-03-15} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2016-03-16} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2016-03-29} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2016-03-31} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2017-04-01} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2017-04-10} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2017-04-14} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2017-04-15} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2017-04-29} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2017-05-12} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2017-05-17} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2017-05-19} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2017-05-25} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2017-06-09} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2017-06-12} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2017-06-15} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2017-06-17} stats: [numFiles=1, numRows=6, totalSize=102, rawDataSize=96]
+Partition sourcedb.tran_creditcard{tran_date=2017-06-19} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2017-07-03} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2017-07-04} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2017-07-30} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2017-08-01} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2017-08-18} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2017-08-28} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2017-09-05} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-02-03} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-02-22} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-03-03} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-03-07} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-03-13} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-03-20} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-03-21} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-03-22} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-03-25} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-03-30} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-03-31} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-04-05} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-04-10} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-04-11} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-04-12} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-04-24} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-05-05} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-05-18} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-06-01} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-06-02} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-06-10} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-06-20} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-06-23} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-07-03} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-07-07} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-07-10} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-07-21} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-07-23} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-07-30} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-08-02} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-08-06} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-08-10} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-08-11} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-08-13} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-08-15} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-08-19} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-08-23} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-08-24} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-08-25} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-08-28} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-08-29} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-08-30} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-09-01} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-09-02} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-09-05} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-09-07} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-09-10} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-09-12} stats: [numFiles=1, numRows=5, totalSize=85, rawDataSize=80]
+Partition sourcedb.tran_creditcard{tran_date=2018-09-17} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-09-19} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-09-20} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-09-22} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-09-23} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-09-26} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-09-27} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-09-28} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-09-30} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-10-02} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-10-03} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-10-04} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-10-11} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-10-12} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-10-20} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-10-22} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-10-23} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-10-27} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-11-03} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-11-15} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-11-21} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-11-24} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-11-25} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-11-28} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-11-29} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-11-30} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-01} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-02} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-04} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-06} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-08} stats: [numFiles=1, numRows=4, totalSize=68, rawDataSize=64]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-09} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-10} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-12} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-14} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-15} stats: [numFiles=1, numRows=3, totalSize=51, rawDataSize=48]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-17} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-19} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-21} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-23} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-24} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-27} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-28} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2018-12-30} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2019-01-01} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2019-01-02} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2019-01-03} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2019-01-09} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2019-01-11} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2019-01-12} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2019-01-13} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2019-01-18} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2019-01-24} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2019-02-08} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2019-02-12} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2019-02-18} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2019-02-21} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2019-02-22} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2019-02-23} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2019-02-24} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2019-03-01} stats: [numFiles=1, numRows=2, totalSize=34, rawDataSize=32]
+Partition sourcedb.tran_creditcard{tran_date=2019-11-04} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2020-04-13} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2020-04-15} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2020-04-23} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2020-05-10} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+Partition sourcedb.tran_creditcard{tran_date=2020-05-23} stats: [numFiles=1, numRows=1, totalSize=17, rawDataSize=16]
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1   Cumulative CPU: 3.25 sec   HDFS Read: 19644 HDFS Write: 12978 SUCCESS
+Total MapReduce CPU Time Spent: 3 seconds 250 msec
+OK
+Time taken: 24.376 seconds
+hive> select * from tran_creditcard;
+OK
+40901	3562001603	2016-01-12
+40903	3562001604	2016-01-27
+40904	3562001613	2016-02-03
+22222	3562001607	2016-02-05
+40905	3562001607	2016-02-05
+40902	3562001608	2016-02-05
+40907	3562001612	2016-02-10
+40906	3562001608	2016-02-17
+40908	3562001630	2016-02-19
+76001	3562001630	2016-02-19
+40909	3562001615	2016-03-05
+40910	3562001607	2016-03-15
+76002	3562001607	2016-03-16
+40911	3562001635	2016-03-29
+76003	3562001635	2016-03-29
+40912	3562001608	2016-03-31
+76004	3562001638	2017-04-01
+76005	3562001638	2017-04-01
+40915	3562001615	2017-04-10
+40916	3562001630	2017-04-14
+76006	3562001630	2017-04-15
+76007	3562001607	2017-04-29
+76008	3562001607	2017-04-29
+40918	3562001604	2017-05-12
+40919	3562001635	2017-05-17
+40926	3562001635	2017-05-19
+40962	3562001604	2017-05-25
+40920	3562001608	2017-06-09
+40960	3562001608	2017-06-09
+40921	3562001674	2017-06-12
+40922	3562001612	2017-06-15
+40923	3562001607	2017-06-17
+76010	3562001607	2017-06-17
+40924	3562001612	2017-06-17
+76009	3562001635	2017-06-17
+40925	3562001674	2017-06-17
+76011	3562001674	2017-06-17
+76012	3562001635	2017-06-19
+40927	3562001621	2017-07-03
+40929	3562001621	2017-07-03
+40928	3562001607	2017-07-04
+76013	3562001607	2017-07-04
+40966	3562001621	2017-07-30
+40914	3562001603	2017-08-01
+40930	3562001603	2017-08-01
+40931	3562001607	2017-08-18
+76014	3562001607	2017-08-18
+40932	3562001674	2017-08-28
+76015	3562001674	2017-08-28
+40933	3562001664	2017-09-05
+76016	3562001664	2017-09-05
+40936	3562001696	2018-02-03
+40937	3562001664	2018-02-22
+76017	3562001664	2018-02-22
+40939	3562001615	2018-03-03
+40938	3562001699	2018-03-07
+40940	3562001699	2018-03-13
+40953	3562001699	2018-03-20
+40957	3562001699	2018-03-21
+40941	3562001638	2018-03-22
+76018	3562001638	2018-03-22
+40955	3562001699	2018-03-25
+40944	3562001615	2018-03-30
+40958	3562001699	2018-03-31
+40935	3562001603	2018-04-05
+40943	3562001603	2018-04-10
+40961	3562001603	2018-04-11
+40942	3562001652	2018-04-12
+40965	3562001603	2018-04-24
+40945	3562001682	2018-05-05
+85611	3562001682	2018-05-05
+40946	3562001674	2018-05-18
+85612	3562001674	2018-05-18
+40947	3562001652	2018-06-01
+40934	3562001688	2018-06-01
+40948	3562001696	2018-06-02
+40959	3562001688	2018-06-10
+40971	3562001696	2018-06-20
+40972	3562001688	2018-06-23
+40963	3562001607	2018-07-03
+85613	3562001607	2018-07-03
+40949	3562001664	2018-07-07
+85614	3562001664	2018-07-07
+40964	3562001638	2018-07-10
+85615	3562001638	2018-07-10
+40950	3562001674	2018-07-21
+40974	3562001674	2018-07-23
+40967	3562001638	2018-07-30
+85616	3562001638	2018-07-30
+40968	3562001607	2018-08-02
+85617	3562001607	2018-08-02
+40981	3562001652	2018-08-06
+40969	3562001699	2018-08-10
+40951	3562001652	2018-08-11
+30010	3562001699	2018-08-13
+40952	3562001692	2018-08-15
+40970	3562001699	2018-08-19
+40973	3562001699	2018-08-23
+40986	3562001652	2018-08-24
+40975	3562001652	2018-08-25
+40977	3562001674	2018-08-28
+97001	3562001674	2018-08-28
+40978	3562001682	2018-08-29
+97002	3562001682	2018-08-29
+40979	3562001652	2018-08-30
+40980	3562001674	2018-09-01
+40954	3562001682	2018-09-01
+97003	3562001682	2018-09-02
+40976	3562001621	2018-09-05
+40982	3562001621	2018-09-07
+40987	3562001621	2018-09-10
+40983	3562001674	2018-09-12
+97005	3562001674	2018-09-12
+40984	3562001682	2018-09-12
+97004	3562001682	2018-09-12
+40956	3562001692	2018-09-12
+40992	3562001621	2018-09-17
+50992	3562001621	2018-09-17
+50993	3562001621	2018-09-19
+50994	3562001621	2018-09-20
+50995	3562001621	2018-09-22
+40985	3562001674	2018-09-23
+40988	3562001674	2018-09-26
+97006	3562001674	2018-09-26
+50997	3562001621	2018-09-27
+40990	3562001674	2018-09-28
+67890	3562001674	2018-09-28
+40991	3562001674	2018-09-30
+40993	3562001652	2018-10-02
+40904	3562001682	2018-10-03
+40994	3562001682	2018-10-03
+40995	3562001696	2018-10-04
+40996	3562001692	2018-10-11
+40997	3562001652	2018-10-12
+40998	3562001696	2018-10-20
+40999	3562001652	2018-10-22
+41000	3562001696	2018-10-23
+41001	3562001692	2018-10-27
+41002	3562001696	2018-11-03
+41005	3562001696	2018-11-15
+41007	3562001696	2018-11-21
+41009	3562001692	2018-11-24
+41014	3562001617	2018-11-25
+41010	3562001696	2018-11-25
+33333	3562001602	2018-11-28
+41012	3562001602	2018-11-28
+42031	3562001617	2018-11-29
+42035	3562001617	2018-11-30
+41016	3562001662	2018-12-01
+41017	3562001606	2018-12-02
+41013	3562001662	2018-12-02
+41019	3562001606	2018-12-04
+41004	3562001611	2018-12-04
+41020	3562001662	2018-12-06
+42022	3562001602	2018-12-08
+44444	3562001602	2018-12-08
+41006	3562001611	2018-12-08
+41008	3562001611	2018-12-08
+42024	3562001662	2018-12-09
+41011	3562001611	2018-12-10
+41015	3562001611	2018-12-12
+42026	3562001662	2018-12-12
+42027	3562001606	2018-12-14
+42028	3562001602	2018-12-15
+97009	3562001602	2018-12-15
+41018	3562001611	2018-12-15
+41021	3562001611	2018-12-17
+42023	3562001611	2018-12-19
+42030	3562001606	2018-12-21
+42025	3562001611	2018-12-21
+42032	3562001662	2018-12-23
+42033	3562001602	2018-12-24
+42034	3562001649	2018-12-27
+55670	3562001649	2018-12-27
+42029	3562001611	2018-12-28
+42036	3562001649	2018-12-30
+55669	3562001649	2018-12-30
+42037	3562001602	2019-01-01
+42038	3562001649	2019-01-02
+55671	3562001649	2019-01-03
+42040	3562001678	2019-01-09
+42041	3562001602	2019-01-11
+42042	3562001678	2019-01-12
+52045	3562001678	2019-01-12
+52046	3562001678	2019-01-13
+52049	3562001678	2019-01-18
+42044	3562001602	2019-01-24
+42047	3562001602	2019-01-24
+42039	3562001631	2019-02-08
+42045	3562001649	2019-02-12
+65456	3562001649	2019-02-12
+42046	3562001617	2019-02-18
+42048	3562001631	2019-02-21
+42049	3562001649	2019-02-22
+67892	3562001649	2019-02-23
+42050	3562001617	2019-02-24
+42051	3562001602	2019-03-01
+89890	3562001602	2019-03-01
+41003	3562001692	2019-11-04
+50000	3562001662	2020-04-13
+50010	3562001662	2020-04-15
+50012	3562001662	2020-04-23
+50013	3562001662	2020-05-10
+50014	3562001662	2020-05-23
+Time taken: 0.351 seconds, Fetched: 204 row(s)
+hive> 
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+8----------In Hive create a Targetdb 
+--------
+hive> create database targetdb;
+OK
+Time taken: 0.1 seconds
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+9-----------Goto Spark and process the data as per functional requirement 
+--------
+ 
+

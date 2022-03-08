@@ -1,0 +1,856 @@
+8.........In Hive create a Targetdb 
+
+----------
+hive> create database targetdb;
+OK
+Time taken: 0.034 seconds
+hive> use targetdb;
+OK
+Time taken: 0.005 seconds
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+9..........process the data as per functional requirement 
+---------
+            1) Generate monthly bill for a credit card number – Year & Month detailed
+
+hive> CREATE TEMPORARY TABLE CREDITCARD(TRAN_ID INT,TRAN_DATE VARCHAR(20),CUST_ID VARCHAR(20),CUST_CC_NO VARCHAR(20),CUST_SSN VARCHAR(50),BRANCH_CODE
+    > INT,TRAN_TYPE VARCHAR(15)) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+OK
+Time taken: 0.035 seconds
+hive> load data local inpath '/home/naveen/sourcelocal/Branch.csv' into table CREDITCARD;
+Loading data to table sourcedb.creditcard
+Table sourcedb.creditcard stats: [numFiles=1, totalSize=1396]
+OK
+Time taken: 0.479 seconds
+hive> select * from creditcard;
+OK
+6300	SBI_Brownsville	Heather Plaza	Brownsville	TX	78521	1800-200-2535
+9526	SBI_Littleton	Noble Embers Ridge	Littleton	CO	80126	1800-500-7121
+3422	SBI_Caguas_BPB	Blue Pioneer Bend	Caguas	PR	734	1800-300-7858
+8300	SBI_San Marcos	Little Common	San Marcos	CA	92069	1800-700-6985
+9527	SBI_Caguas_CRV	Crystal River Mall	Caguas	PR	729	1800-500-5485
+3420	SBI_Passaic	Sleepy Quail Promena	Passaic	NJ	7055	1800-300-8524
+6301	SBI_Caguas_HC	High Concession	Caguas	PR	732	1800-200-5685
+8301	SBI_Lawrence	Foggy Forest Plaza	Lawrence	MA	1841	1800-700-8925
+9528	SBI_Caguas_QS	Quaking Street	Caguas	PR	727	1800-500-5425
+3421	SBI_Stafford	Harvest Beacon Plaza	Stafford	VA	22554	1800-300-3758
+6302	SBI_Caguas_SW	Stony Woods	Caguas	PR	731	1800-200-5685
+3428	SBI_San Antonio	Jagged Embers By-pas	San Antonio	TX	78227	1800-300-1758
+9529	SBI_Caguas_IOG	Iron Oak Gardens	Caguas	PR	730	1800-500-6325
+3430	SBI_Pico Rivera	Hazy Pony Square	Pico Rivera	CA	90660	1800-300-6459
+8302	SBI_Fontana	Burning Glen	Fontana	CA	92336	1800-700-7415
+3431	SBI_Caguas_IP	Iron Port	Caguas	PR	728	1800-300-3472
+9530	SBI_Taylor	Noble Pike	Taylor	MI	48180	1800-500-2578
+8305	SBI_Martinez	Hazy Butterfly Circl	Martinez	CA	94553	1800-700-3692
+6304	SBI_Caguas_RTB	Red Treasure Bay	Caguas	PR	725	1800-200-5876
+9430	SBI_West New York	Old Route	West New York	NJ	7093	1800-500-4925
+3425	SBI_Caguas_OWM	Old Willow Mall	Caguas	PR	726	1800-300-3742
+Time taken: 0.045 seconds, Fetched: 21 row(s)
+------------------------------------------------------------
+hive> CREATE EXTERNAL TABLE IF NOT EXISTS TARGETDB.TRAN_CREDITCARD(TRAN_ID INT,CUST_ID varchar(20)) PARTITIONED BY (TRAN_DATE DATE) ROW
+    >  FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS parquet location '/user/hduser/credcarddb/outputdir/Year_Month_Partition/';
+OK
+Time taken: 0.009 seconds
+hive> INSERT OVERWRITE TABLE TARGETDB.TRAN_CREDITCARD PARTITION (TRAN_DATE) SELECT TRAN_ID,CUST_ID,TRAN_DATE FROM CREDITCARD;
+Query ID = naveen_20220208230700_30043bf4-0af6-43da-ba9d-ab05f9d9fd40
+Total jobs = 3
+Launching Job 1 out of 3
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1644337620723_0006, Tracking URL = http://naveen-VirtualBox:8088/proxy/application_1644337620723_0006/
+Kill Command = /home/naveen/hadoop-2.10.1/bin/hadoop job  -kill job_1644337620723_0006
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0
+2022-02-08 23:07:05,706 Stage-1 map = 0%,  reduce = 0%
+2022-02-08 23:07:11,853 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 3.27 sec
+MapReduce Total cumulative CPU time: 3 seconds 270 msec
+Ended Job = job_1644337620723_0006
+Stage-4 is selected by condition resolver.
+Stage-3 is filtered out by condition resolver.
+Stage-5 is filtered out by condition resolver.
+Moving data to: hdfs://localhost:9000/user/hduser/credcarddb/outputdir/Year_Month_Partition/.hive-staging_hive_2022-02-08_23-07-00_242_6749848345660788172-1/-ext-10000
+Loading data to table targetdb.tran_creditcard partition (tran_date=null)
+	 Time taken for load dynamic partitions : 932
+	Loading partition {tran_date=SBI_Littleton}
+	Loading partition {tran_date=SBI_West New York}
+	Loading partition {tran_date=SBI_Caguas_IOG}
+	Loading partition {tran_date=SBI_Caguas_RTB}
+	Loading partition {tran_date=SBI_Lawrence}
+	Loading partition {tran_date=SBI_Brownsville}
+	Loading partition {tran_date=SBI_Caguas_HC}
+	Loading partition {tran_date=SBI_Fontana}
+	Loading partition {tran_date=SBI_Caguas_BPB}
+	Loading partition {tran_date=SBI_Pico Rivera}
+	Loading partition {tran_date=SBI_Caguas_CRV}
+	Loading partition {tran_date=SBI_San Marcos}
+	Loading partition {tran_date=SBI_Caguas_QS}
+	Loading partition {tran_date=SBI_Passaic}
+	Loading partition {tran_date=SBI_Caguas_IP}
+	Loading partition {tran_date=SBI_Stafford}
+	Loading partition {tran_date=SBI_Taylor}
+	Loading partition {tran_date=SBI_Martinez}
+	Loading partition {tran_date=SBI_Caguas_OWM}
+	Loading partition {tran_date=SBI_San Antonio}
+	Loading partition {tran_date=SBI_Caguas_SW}
+	 Time taken for adding to write entity : 3
+Partition targetdb.tran_creditcard{tran_date=SBI_Brownsville} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_Caguas_BPB} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_Caguas_CRV} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_Caguas_HC} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_Caguas_IOG} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_Caguas_IP} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_Caguas_OWM} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_Caguas_QS} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_Caguas_RTB} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_Caguas_SW} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_Fontana} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_Lawrence} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_Littleton} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_Martinez} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_Passaic} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_Pico Rivera} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_San Antonio} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_San Marcos} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_Stafford} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_Taylor} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+Partition targetdb.tran_creditcard{tran_date=SBI_West New York} stats: [numFiles=1, numRows=1, totalSize=253, rawDataSize=2]
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1   Cumulative CPU: 3.27 sec   HDFS Read: 6345 HDFS Write: 6763 SUCCESS
+Total MapReduce CPU Time Spent: 3 seconds 270 msec
+OK
+Time taken: 14.34 seconds
+hive> SELECT * FROM TARGETDB.TRAN_CREDITCARD;
+OK
+askAttemptContextImpl
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: RecordReader initialized will read a total of 1 records.
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: at row 0. reading next block
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: block read in memory in 1 ms. row count = 1
+8 Feb, 2022 11:00:35 PM WARNING: parquet.hadoop.ParquetRecordReader: Can not initialize counter due to context is not a instance of TaskInputOutputContext, but is org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: RecordReader initialized will read a total of 1 records.
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: at row 0. reading next block
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: block read in memory in 1 ms. row count = 1
+8 Feb, 2022 11:00:35 PM WARNING: parquet.hadoop.ParquetRecordReader: Can not initialize counter due to context is not a instance of TaskInputOutputContext, but is org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: RecordReader initialized will read a total of 1 records.
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: at row 0. reading next block
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: block read in memory in 1 ms. row count = 1
+8 Feb, 2022 11:00:35 PM WARNING: parquet.hadoop.ParquetRecordReader: Can not initialize counter due to context is not a instance of TaskInputOutputContext, but is org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: RecordReader initialized will read a total of 1 records.
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: at row 0. reading next block
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: block read in memory in 1 ms. row count = 1
+8 Feb, 2022 11:00:35 PM WARNING: parquet.hadoop.ParquetRecordReader: Can not initialize counter due to context is not a instance of TaskInputOutputContext, but is org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: RecordReader initialized will read a total of 1 records.
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: at row 0. reading next block
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: block read in memory in 1 ms. row count = 1
+8 Feb, 2022 11:00:35 PM WARNING: parquet.hadoop.ParquetRecordReader: Can not initialize counter due to context is not a instance of TaskInputOutputContext, but is org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: RecordReader initialized will read a total of 1 records.
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: at row 0. reading next block
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: block read in memory in 1 ms. row count = 1
+8 Feb, 2022 11:00:35 PM WARNING: parquet.hadoop.ParquetRecordReader: Can not initialize counter due to context is not a instance of TaskInputOutputContext, but is org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: RecordReader initialized will read a total of 1 records.
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: at row 0. reading next block
+8 Feb, 2022 11:00:35 PM INFO: parquet.hadoop.InternalParquetRecordReader: block read in memory in 1 ms. row count = 1
+8 Feb, 2022 11:07:21 PM WARNING: parquet.hadoop.ParquetRecordReader: Can not initialize counter due to context is not a instance of TaskInputOutputContext, but is org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: RecordReader initialized will read a total of 1 records.
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: at row 0. reading next block
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: block read in memory in 1 ms. row count = 1
+8 Feb, 2022 11:07:21 PM WARNING: parquet.hadoop.ParquetRecordReader: Can not initialize counter due to context is not a instance of TaskInputOutputContext, but is org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: RecordReader initialized will read a total of 1 records.
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: at row 0. reading next block
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: block read in memory in 2 ms. row count = 1
+8 Feb, 2022 11:07:21 PM WARNING: parquet.hadoop.ParquetRecordReader: Can not initialize counter due to context is not a instance of TaskInputOutputContext, but is org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: RecordReader initialized will read a total of 1 records.
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: at row 0. reading next block
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: block read in memory in 2 ms. row count = 1
+8 Feb, 2022 11:07:21 PM WARNING: parquet.hadoop.ParquetRecordReader: Can not initialize counter due to context is not a instance of TaskInputOutputContext, but is org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: RecordReader initialized will read a total of 1 records.
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: at row 0. reading next block
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: block read in memory in 1 ms. row count = 1
+8 Feb, 2022 11:07:21 PM WARNING: parquet.hadoop.ParquetRecordReader: Can not initialize counter due to context is not a instance of TaskInputOutputContext, but is org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: RecordReader initialized will read a total of 1 records.
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: at row 0. reading next block
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: block read in memory in 1 ms. row count = 1
+8 Feb, 2022 11:07:21 PM WARNING: parquet.hadoop.ParquetRecordReader: Can not initialize counter due to context is not a instance of TaskInputOutputContext, but is org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: RecordReader initialized will read a total of 1 records.
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: at row 0. reading next block
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: block read in memory in 2 ms. row count = 1
+8 Feb, 2022 11:07:21 PM WARNING: parquet.hadoop.ParquetRecordReader: Can not initialize counter due to context is not a instance of TaskInputOutputContext, but is org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: RecordReader initialized will read a total of 1 records.
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: at row 0. reading next block
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: block read in memory in 1 ms. row count = 1
+8 Feb, 2022 11:07:21 PM WARNING: parquet.hadoop.ParquetRecordReader: Can not initialize counter due to context is not a instance of TaskInputOutputContext, but is org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.InternalParquetRecordReader: RecordReader initialized will read a total of 1 records.
+8 Feb, 2022 11:07:21 PM INFO: parquet.hadoop.
+Select * tran_id,cust_id,Tran_date from Creditcard;		
+2018-11-28	3562001602	33333
+2018-11-28	3562001602	41012
+2018-12-08	3562001602	42022
+2018-12-15	3562001602	42028
+2018-12-24	3562001602	42033
+2019-01-01	3562001602	42037
+2019-01-11	3562001602	42041
+2019-01-24	3562001602	42044
+2019-01-24	3562001602	42047
+2019-03-01	3562001602	42051
+2018-12-08	3562001602	44444
+2019-03-01	3562001602	89890
+2018-12-15	3562001602	97009
+2016-01-12	3562001603	40901
+2017-08-01	3562001603	40914
+2017-08-01	3562001603	40930
+2018-04-05	3562001603	40935
+2018-04-10	3562001603	40943
+2018-04-11	3562001603	40961
+2018-04-24	3562001603	40965
+2016-01-27	3562001604	40903
+2017-05-12	3562001604	40918
+2017-05-25	3562001604	40962
+2018-12-02	3562001606	41017
+2018-12-04	3562001606	41019
+2018-12-14	3562001606	42027
+2018-12-21	3562001606	42030
+2016-02-05	3562001607	22222
+2016-02-05	3562001607	40905
+2016-03-15	3562001607	40910
+2017-06-17	3562001607	40923
+2017-07-04	3562001607	40928
+2017-08-18	3562001607	40931
+2018-07-03	3562001607	40963
+2018-08-02	3562001607	40968
+2016-03-16	3562001607	76002
+2017-04-29	3562001607	76007
+2017-04-29	3562001607	76008
+2017-06-17	3562001607	76010
+2017-07-04	3562001607	76013
+2017-08-18	3562001607	76014
+2018-07-03	3562001607	85613
+2018-08-02	3562001607	85617
+2016-02-05	3562001608	40902
+2016-02-17	3562001608	40906
+2016-03-31	3562001608	40912
+2017-06-09	3562001608	40920
+2017-06-09	3562001608	40960
+2018-12-04	3562001611	41004
+2018-12-08	3562001611	41006
+2018-12-08	3562001611	41008
+2018-12-10	3562001611	41011
+2018-12-12	3562001611	41015
+2018-12-15	3562001611	41018
+2018-12-17	3562001611	41021
+2018-12-19	3562001611	42023
+2018-12-21	3562001611	42025
+2018-12-28	3562001611	42029
+2016-02-10	3562001612	40907
+2017-06-15	3562001612	40922
+2017-06-17	3562001612	40924
+2016-02-03	3562001613	40904
+2016-03-05	3562001615	40909
+2017-04-10	3562001615	40915
+2018-03-03	3562001615	40939
+2018-03-30	3562001615	40944
+2018-11-25	3562001617	41014
+2018-11-29	3562001617	42031
+2018-11-30	3562001617	42035
+2019-02-18	3562001617	42046
+2019-02-24	3562001617	42050
+2017-07-03	3562001621	40927
+2017-07-03	3562001621	40929
+2017-07-30	3562001621	40966
+2018-09-05	3562001621	40976
+2018-09-07	3562001621	40982
+2018-09-10	3562001621	40987
+2018-09-17	3562001621	40992
+2018-09-17	3562001621	50992
+2018-09-19	3562001621	50993
+2018-09-20	3562001621	50994
+2018-09-22	3562001621	50995
+2018-09-27	3562001621	50997
+2016-02-19	3562001630	40908
+2017-04-14	3562001630	40916
+2016-02-19	3562001630	76001
+2017-04-15	3562001630	76006
+2019-02-08	3562001631	42039
+2019-02-21	3562001631	42048
+2016-03-29	3562001635	40911
+2017-05-17	3562001635	40919
+2017-05-19	3562001635	40926
+2016-03-29	3562001635	76003
+2017-06-17	3562001635	76009
+2017-06-19	3562001635	76012
+2018-03-22	3562001638	40941
+2018-07-10	3562001638	40964
+2018-07-30	3562001638	40967
+2017-04-01	3562001638	76004
+2017-04-01	3562001638	76005
+2018-03-22	3562001638	76018
+2018-07-10	3562001638	85615
+2018-07-30	3562001638	85616
+2018-12-27	3562001649	42034
+2018-12-30	3562001649	42036
+2019-01-02	3562001649	42038
+2019-02-12	3562001649	42045
+2019-02-22	3562001649	42049
+2018-12-30	3562001649	55669
+2018-12-27	3562001649	55670
+2019-01-03	3562001649	55671
+2019-02-12	3562001649	65456
+2019-02-23	3562001649	67892
+2018-04-12	3562001652	40942
+2018-06-01	3562001652	40947
+2018-08-11	3562001652	40951
+2018-08-25	3562001652	40975
+2018-08-30	3562001652	40979
+2018-08-06	3562001652	40981
+2018-08-24	3562001652	40986
+2018-10-02	3562001652	40993
+2018-10-12	3562001652	40997
+2018-10-22	3562001652	40999
+2018-12-02	3562001662	41013
+2018-12-01	3562001662	41016
+2018-12-06	3562001662	41020
+2018-12-09	3562001662	42024
+2018-12-12	3562001662	42026
+2018-12-23	3562001662	42032
+2020-04-13	3562001662	50000
+2020-04-15	3562001662	50010
+2020-04-23	3562001662	50012
+2020-05-10	3562001662	50013
+2020-05-23	3562001662	50014
+2017-09-05	3562001664	40933
+2018-02-22	3562001664	40937
+2018-07-07	3562001664	40949
+2017-09-05	3562001664	76016
+2018-02-22	3562001664	76017
+2018-07-07	3562001664	85614
+2017-06-12	3562001674	40921
+2017-06-17	3562001674	40925
+2017-08-28	3562001674	40932
+2018-05-18	3562001674	40946
+2018-07-21	3562001674	40950
+2018-07-23	3562001674	40974
+2018-08-28	3562001674	40977
+2018-09-01	3562001674	40980
+2018-09-12	3562001674	40983
+2018-09-23	3562001674	40985
+2018-09-26	3562001674	40988
+2018-09-28	3562001674	40990
+2018-09-30	3562001674	40991
+2018-09-28	3562001674	67890
+2017-06-17	3562001674	76011
+2017-08-28	3562001674	76015
+2018-05-18	3562001674	85612
+2018-08-28	3562001674	97001
+2018-09-12	3562001674	97005
+2018-09-26	3562001674	97006
+2019-01-09	3562001678	42040
+2019-01-12	3562001678	42042
+2019-01-12	3562001678	52045
+2019-01-13	3562001678	52046
+2019-01-18	3562001678	52049
+2018-10-03	3562001682	40904
+2018-05-05	3562001682	40945
+2018-09-01	3562001682	40954
+2018-08-29	3562001682	40978
+2018-09-12	3562001682	40984
+2018-10-03	3562001682	40994
+2018-05-05	3562001682	85611
+2018-08-29	3562001682	97002
+2018-09-02	3562001682	97003
+2018-09-12	3562001682	97004
+2018-06-01	3562001688	40934
+2018-06-10	3562001688	40959
+2018-06-23	3562001688	40972
+2018-08-15	3562001692	40952
+2018-09-12	3562001692	40956
+2018-10-11	3562001692	40996
+2018-10-27	3562001692	41001
+2019-11-04	3562001692	41003
+2018-11-24	3562001692	41009
+2018-02-03	3562001696	40936
+2018-06-02	3562001696	40948
+2018-06-20	3562001696	40971
+2018-10-04	3562001696	40995
+2018-10-20	3562001696	40998
+2018-10-23	3562001696	41000
+2018-11-03	3562001696	41002
+2018-11-15	3562001696	41005
+2018-11-21	3562001696	41007
+2018-11-25	3562001696	41010
+2018-08-13	3562001699	30010
+2018-03-07	3562001699	40938
+2018-03-13	3562001699	40940
+2018-03-20	3562001699	40953
+2018-03-25	3562001699	40955
+2018-03-21	3562001699	40957
+2018-03-31	3562001699	40958
+2018-08-10	3562001699	40969
+2018-08-19	3562001699	40970
+2018-08-23	3562001699	40973
+
+Time taken: 0.102 seconds, Fetched: 21 row(s)
+--------------------------------------------------------------------------------------------------------------------------------
+
+CreditCard wise - Year – wise Month wise .  Summarized  output
+--------------------
+hive> CREATE TEMPORARY TABLE monthly_bill(cust_id varchar(20),cust_f_name varchar(40),cust_m_name varchar (40), cust_l_name varchar(40),cust_cc_no bigint,
+    > card_type varchar(40),tran_year int,tran_month varchar(50),bill int,remark string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+OK
+Time taken: 0.03 seconds
+hive> load data local inpath '/home/naveen/sourcelocal/Customer.csv' into table monthly_bill;
+Loading data to table sourcedb.monthly_bill
+Table sourcedb.monthly_bill stats: [numFiles=1, totalSize=9245]
+OK
+Time taken: 0.046 seconds
+hive> select * from monthly_bill;
+OK
+3562001602	Chrissie		Rayner	6334878173213670	amex	500000	9/12/2017	567936602	Noble Embers Ridge
+3562001603	Titus		Paolozzi	3567523223820780	visa	50000	6/17/2024	190445473	Blue Pioneer Bend
+3562001604	Jethro	Byrom	Winear	3039905356295530	amex	500000	7/16/2021	143032108	Little Common
+3562001606	Lura		Flye	3578070062995380	visa	50000	10/20/2018	280264513	Sleepy Quail Promenade
+3562001607	Merrill		Ratcliff	5403648817321420	master	100000	3/3/2017	195223654	High Concession
+3562001608	Venita	Lennard	Rutgers	3547496963061990	visa	50000	5/24/2024	531442970	Foggy Forest Plaza
+3562001610	Orbadiah		Royson	3051418309044220	amex	500000	4/1/2023	835384343	Harvest Beacon Plaza
+3562001611	Merle		McGenn	4936290378811880	master	100000	4/23/2025	653470680	Stony Woods
+3562001612	Fidel		Windas	3531017574361360	visa	50000	7/9/2019	355714929	Jagged Embers By-pass
+3562001613	Beatrice		Feedome	3588589058006900	visa	50000	3/18/2019	763905687	Iron Oak Gardens
+3562001614	Asia		Trudgion	5602256302089870	amex	500000	1/25/2024	533779130	Hazy Pony Square
+3562001615	Nessa		Brisse	3566727575950610	visa	50000	2/12/2027	398859724	Burning Glen
+3562001616	Cristine	Vittorio	Braxay	2017260974760290	amex	50000	6/11/2021	585616059	Iron Port
+3562001617	Tucky		Sabbatier	3058775791217550	amex	500000	7/18/2023	496377931	Noble Pike
+3562001621	Peg		Welbrock	3537914201882630	visa	50000	8/16/2017	462741915	Old Willow Mall
+3562001622	Amity		Birkenshaw	3746221893451670	amex	500000	10/24/2017	527168982	Heather Plaza
+3562001623	Marylynne	Sheff	Peddel	4913946420798260	visa	50000	1/3/2022	726028398	Noble Embers Ridge
+3562001624	Vladamir	Augy	Hehl	6763887925070990	master	100000	9/4/2025	854984549	Blue Pioneer Bend
+3562001626	Giacomo		Clifton	3746227754890490	amex	500000	9/6/2024	416699493	Sleepy Quail Promenade
+3562001627	Dalila		Weatherhead	3539018736993780	visa	50000	6/5/2024	756695602	Little Common
+3562001629	Sherlock	Vince	Woolliams	5602225917136840	amex	500000	2/12/2021	381425374	Heather Plaza
+3562001630	Elladine	Kenneth	Dealy	6378610833616780	master	100000	1/4/2020	522026991	Jagged Embers By-pass
+3562001631	Marlow	Deane	Seleway	3537861601381620	visa	50000	11/19/2016	417953628	Noble Embers Ridge
+3562001634	Haywood	Cesare	Gernier	3555072384085640	visa	50000	11/17/2021	324748675	Blue Pioneer Bend
+3562001635	Sampson		Genge	5602257512986730	amex	500000	7/11/2022	742724564	Hazy Pony Square
+3562001636	Iggy		Wardale	3584827256597080	visa	50000	11/23/2024	629172934	Heather Plaza
+3562001637	Lorain		Crone	4913586748929930	visa	50000	10/7/2021	316626688	Little Common
+3562001638	Denny		Hehir	5210169439885370	master	100000	1/5/2017	610816990	Sleepy Quail Promenade
+3562001643	Edmund		Trigg	5468084768591910	master	100000	11/6/2024	646192779	Red Treasure Bay
+3562001649	Fawnia		Swale	5127419432105430	master	100000	3/21/2025	531517681	Heather Plaza
+3562001650	Cristine		Juden	6334827235490350	amex	500000	10/19/2025	551848770	Heather Plaza
+3562001651	Freeman	Bartlet	Ledeker	3574831034580740	visa	50000	4/18/2027	403637146	Sleepy Quail Promenade
+3562001652	Gina		Massimi	3553250558494440	visa	50000	5/27/2019	185955202	Noble Embers Ridge
+3562001654	Amil	Curr	Fawbert	5010120208028190	master	100000	1/14/2023	490994326	Blue Pioneer Bend
+3562001661	Clarinda		Scoone	4936566808390050	master	100000	8/11/2026	636563744	Jagged Embers By-pass
+3562001662	Reta		Nairy	2017763113611190	amex	500000	5/11/2018	651396269	Quaking Street
+3562001664	Nessy		Royal	6334792030406340	amex	500000	5/1/2023	639326651	Blue Pioneer Bend
+3562001667	Devlen		Pietraszek	3576170925662380	visa	50000	11/7/2023	132925451	Little Common
+3562001674	Rhoda	Arlin	Biddles	3549138667705450	visa	50000	5/22/2020	828832569	Foggy Forest Plaza
+3562001675	Florenza	Marwin	Tortice	3576661367312800	visa	50000	3/21/2021	247313110	Noble Embers Ridge
+3562001676	Trumaine	Arel	Lukock	4905195125036260	master	100000	10/6/2024	138775149	Old Willow Mall
+3562001678	Bogart	Raimund	Summersby	3041940220450330	amex	500000	5/25/2024	580262327	Hazy Pony Square
+3562001679	Sawyer		Ismail	3547026896168710	visa	50000	12/22/2026	519314802	Sleepy Quail Promenade
+3562001680	Nelie	Rollin	Camelin	5602250664479540	amex	500000	7/23/2023	725510273	Burning Glen
+3562001681	Jacklin		Stango	6771126200690550	master	100000	1/22/2022	111143799	High Concession
+3562001682	Ilario		Hadfield	6304715204316940	master	100000	4/7/2017	469721617	Heather Plaza
+3562001683	Ruperto	Leupold	Martinez	3583060400927120	visa	50000	5/13/2021	759211565	Quaking Street
+3562001687	Meredeth		Blaycock	6334071935110170	amex	500000	3/18/2018	342743043	Little Common
+3562001688	Torrance		Scrowby	4607915147472950	visa	50000	3/7/2018	727103869	Harvest Beacon Plaza
+3562001689	Berton	Ryan	Mc Pake	5371063911268820	master	100000	3/5/2017	338877893	Hazy Butterfly Circle
+3562001690	Sigismondo		Clever	3553276103969740	visa	50000	4/6/2027	693722843	High Concession
+3562001691	Bidget	Curcio	Chestnutt	5602255813010240	amex	500000	8/27/2023	310164096	Sleepy Quail Promenade
+3562001692	Layne	Isacco	Phelips	5602236760338580	amex	500000	12/4/2018	346586073	Old Willow Mall
+3562001693	Zilvia	Raynard	Fox	5602242963853220	amex	500000	9/25/2027	224472153	Jagged Embers By-pass
+3562001695	Derron	Gothart	Kitchinghan	4913225109356710	visa	50000	10/22/2019	893685782	Burning Glen
+3562001696	Ray		Dilliway	3583849494251710	visa	50000	7/5/2027	751883259	Heather Plaza
+3562001697	Ebenezer	Corty	Demanche	6759542041496280	master	100000	4/30/2021	150789497	Harvest Beacon Plaza
+3562001698	Tillie	Corty	Denisot	3550166575967910	visa	50000	4/23/2025	802751526	Quaking Street
+3562001699	Brig		Tompkiss	2014268557886530	amex	500000	2/28/2022	342068735	Hazy Pony Square
+3562001700	Martha		Harnes	3557727107117620	visa	50000	4/29/2026	327478784	Noble Embers Ridge
+Time taken: 0.029 seconds, Fetched: 60 row(s)
+--------------------------------------------------------
+hive> create external table targetdb.monthly_bill(cust_id bigint,cust_f_name varchar(40),cust_m_name varchar (40), cust_l_name varchar(40),cust_cc_no bigint) PARTITIONED BY
+    > (card_type varchar(50)) row format delimited fields terminated by ',' lines terminated by '\n' stored as parquet location '/user/hduser/credcarddb/outputdir/Monthly_Bill/';
+OK
+Time taken: 0.034 seconds
+hive> INSERT OVERWRITE TABLE TARGETDB.MONTHLY_BILL PARTITION (card_type) SELECT CUST_ID,cust_f_name,cust_m_name,cust_l_name,cust_cc_no,
+    > card_type FROM CUSTOMERs;
+Query ID = naveen_20220208232812_4703a105-b4ed-4404-af9e-b9742ed0ba4d
+Total jobs = 3
+Launching Job 1 out of 3
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1644337620723_0008, Tracking URL = http://naveen-VirtualBox:8088/proxy/application_1644337620723_0008/
+Kill Command = /home/naveen/hadoop-2.10.1/bin/hadoop job  -kill job_1644337620723_0008
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0
+2022-02-08 23:28:17,765 Stage-1 map = 0%,  reduce = 0%
+2022-02-08 23:28:22,870 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.66 sec
+MapReduce Total cumulative CPU time: 2 seconds 660 msec
+Ended Job = job_1644337620723_0008
+Stage-4 is selected by condition resolver.
+Stage-3 is filtered out by condition resolver.
+Stage-5 is filtered out by condition resolver.
+Moving data to: hdfs://localhost:9000/user/hduser/credcarddb/outputdir/Monthly_Bill/.hive-staging_hive_2022-02-08_23-28-12_496_30577436140330261-1/-ext-10000
+Loading data to table targetdb.monthly_bill partition (card_type=null)
+	 Time taken for load dynamic partitions : 113
+	Loading partition {card_type=visa}
+	Loading partition {card_type=master}
+	Loading partition {card_type=amex}
+	 Time taken for adding to write entity : 0
+Partition targetdb.monthly_bill{card_type=amex} stats: [numFiles=1, numRows=40, totalSize=1710, rawDataSize=200]
+Partition targetdb.monthly_bill{card_type=master} stats: [numFiles=1, numRows=28, totalSize=1395, rawDataSize=140]
+Partition targetdb.monthly_bill{card_type=visa} stats: [numFiles=1, numRows=52, totalSize=2001, rawDataSize=260]
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1   Cumulative CPU: 2.66 sec   HDFS Read: 24919 HDFS Write: 5313 SUCCESS
+Total MapReduce CPU Time Spent: 2 seconds 660 msec
+OK
+Time taken: 11.652 seconds
+hive> select * from TARGETDB.MONTHLY_BILL;
+OK
+3562001602	Chrissie		Rayner	6334878173213670	amex
+3562001604	Jethro	Byrom	Winear	3039905356295530	amex
+3562001610	Orbadiah		Royson	3051418309044220	amex
+3562001614	Asia		Trudgion	5602256302089870	amex
+3562001616	Cristine	Vittorio	Braxay	2017260974760290	amex
+3562001617	Tucky		Sabbatier	3058775791217550	amex
+3562001622	Amity		Birkenshaw	3746221893451670	amex
+3562001626	Giacomo		Clifton	3746227754890490	amex
+3562001629	Sherlock	Vince	Woolliams	5602225917136840	amex
+3562001635	Sampson		Genge	5602257512986730	amex
+3562001650	Cristine		Juden	6334827235490350	amex
+3562001662	Reta		Nairy	2017763113611190	amex
+3562001664	Nessy		Royal	6334792030406340	amex
+3562001678	Bogart	Raimund	Summersby	3041940220450330	amex
+3562001680	Nelie	Rollin	Camelin	5602250664479540	amex
+3562001687	Meredeth		Blaycock	6334071935110170	amex
+3562001691	Bidget	Curcio	Chestnutt	5602255813010240	amex
+3562001692	Layne	Isacco	Phelips	5602236760338580	amex
+3562001693	Zilvia	Raynard	Fox	5602242963853220	amex
+3562001699	Brig		Tompkiss	2014268557886530	amex
+3562001602	Chrissie		Rayner	6334878173213670	amex
+3562001604	Jethro	Byrom	Winear	3039905356295530	amex
+3562001610	Orbadiah		Royson	3051418309044220	amex
+3562001614	Asia		Trudgion	5602256302089870	amex
+3562001616	Cristine	Vittorio	Braxay	2017260974760290	amex
+3562001617	Tucky		Sabbatier	3058775791217550	amex
+3562001622	Amity		Birkenshaw	3746221893451670	amex
+3562001626	Giacomo		Clifton	3746227754890490	amex
+3562001629	Sherlock	Vince	Woolliams	5602225917136840	amex
+3562001635	Sampson		Genge	5602257512986730	amex
+3562001650	Cristine		Juden	6334827235490350	amex
+3562001662	Reta		Nairy	2017763113611190	amex
+3562001664	Nessy		Royal	6334792030406340	amex
+3562001678	Bogart	Raimund	Summersby	3041940220450330	amex
+3562001680	Nelie	Rollin	Camelin	5602250664479540	amex
+3562001687	Meredeth		Blaycock	6334071935110170	amex
+3562001691	Bidget	Curcio	Chestnutt	5602255813010240	amex
+3562001692	Layne	Isacco	Phelips	5602236760338580	amex
+3562001693	Zilvia	Raynard	Fox	5602242963853220	amex
+3562001699	Brig		Tompkiss	2014268557886530	amex
+3562001607	Merrill		Ratcliff	5403648817321420	master
+3562001611	Merle		McGenn	4936290378811880	master
+3562001624	Vladamir	Augy	Hehl	6763887925070990	master
+3562001630	Elladine	Kenneth	Dealy	6378610833616780	master
+3562001638	Denny		Hehir	5210169439885370	master
+3562001643	Edmund		Trigg	5468084768591910	master
+3562001649	Fawnia		Swale	5127419432105430	master
+3562001654	Amil	Curr	Fawbert	5010120208028190	master
+3562001661	Clarinda		Scoone	4936566808390050	master
+3562001676	Trumaine	Arel	Lukock	4905195125036260	master
+3562001681	Jacklin		Stango	6771126200690550	master
+3562001682	Ilario		Hadfield	6304715204316940	master
+3562001689	Berton	Ryan	Mc Pake	5371063911268820	master
+3562001697	Ebenezer	Corty	Demanche	6759542041496280	master
+3562001607	Merrill		Ratcliff	5403648817321420	master
+3562001611	Merle		McGenn	4936290378811880	master
+3562001624	Vladamir	Augy	Hehl	6763887925070990	master
+3562001630	Elladine	Kenneth	Dealy	6378610833616780	master
+3562001638	Denny		Hehir	5210169439885370	master
+3562001643	Edmund		Trigg	5468084768591910	master
+3562001649	Fawnia		Swale	5127419432105430	master
+3562001654	Amil	Curr	Fawbert	5010120208028190	master
+3562001661	Clarinda		Scoone	4936566808390050	master
+3562001676	Trumaine	Arel	Lukock	4905195125036260	master
+3562001681	Jacklin		Stango	6771126200690550	master
+3562001682	Ilario		Hadfield	6304715204316940	master
+3562001689	Berton	Ryan	Mc Pake	5371063911268820	master
+3562001697	Ebenezer	Corty	Demanche	6759542041496280	master
+3562001603	Titus		Paolozzi	3567523223820780	visa
+3562001606	Lura		Flye	3578070062995380	visa
+3562001608	Venita	Lennard	Rutgers	3547496963061990	visa
+3562001612	Fidel		Windas	3531017574361360	visa
+3562001613	Beatrice		Feedome	3588589058006900	visa
+3562001615	Nessa		Brisse	3566727575950610	visa
+3562001621	Peg		Welbrock	3537914201882630	visa
+3562001623	Marylynne	Sheff	Peddel	4913946420798260	visa
+3562001627	Dalila		Weatherhead	3539018736993780	visa
+3562001631	Marlow	Deane	Seleway	3537861601381620	visa
+3562001634	Haywood	Cesare	Gernier	3555072384085640	visa
+3562001636	Iggy		Wardale	3584827256597080	visa
+3562001637	Lorain		Crone	4913586748929930	visa
+3562001651	Freeman	Bartlet	Ledeker	3574831034580740	visa
+3562001652	Gina		Massimi	3553250558494440	visa
+3562001667	Devlen		Pietraszek	3576170925662380	visa
+3562001674	Rhoda	Arlin	Biddles	3549138667705450	visa
+3562001675	Florenza	Marwin	Tortice	3576661367312800	visa
+3562001679	Sawyer		Ismail	3547026896168710	visa
+3562001683	Ruperto	Leupold	Martinez	3583060400927120	visa
+3562001688	Torrance		Scrowby	4607915147472950	visa
+3562001690	Sigismondo		Clever	3553276103969740	visa
+3562001695	Derron	Gothart	Kitchinghan	4913225109356710	visa
+3562001696	Ray		Dilliway	3583849494251710	visa
+3562001698	Tillie	Corty	Denisot	3550166575967910	visa
+3562001700	Martha		Harnes	3557727107117620	visa
+3562001603	Titus		Paolozzi	3567523223820780	visa
+3562001606	Lura		Flye	3578070062995380	visa
+3562001608	Venita	Lennard	Rutgers	3547496963061990	visa
+3562001612	Fidel		Windas	3531017574361360	visa
+3562001613	Beatrice		Feedome	3588589058006900	visa
+3562001615	Nessa		Brisse	3566727575950610	visa
+3562001621	Peg		Welbrock	3537914201882630	visa
+3562001623	Marylynne	Sheff	Peddel	4913946420798260	visa
+3562001627	Dalila		Weatherhead	3539018736993780	visa
+3562001631	Marlow	Deane	Seleway	3537861601381620	visa
+3562001634	Haywood	Cesare	Gernier	3555072384085640	visa
+3562001636	Iggy		Wardale	3584827256597080	visa
+3562001637	Lorain		Crone	4913586748929930	visa
+3562001651	Freeman	Bartlet	Ledeker	3574831034580740	visa
+3562001652	Gina		Massimi	3553250558494440	visa
+3562001667	Devlen		Pietraszek	3576170925662380	visa
+3562001674	Rhoda	Arlin	Biddles	3549138667705450	visa
+3562001675	Florenza	Marwin	Tortice	3576661367312800	visa
+3562001679	Sawyer		Ismail	3547026896168710	visa
+3562001683	Ruperto	Leupold	Martinez	3583060400927120	visa
+3562001688	Torrance		Scrowby	4607915147472950	visa
+3562001690	Sigismondo		Clever	3553276103969740	visa
+3562001695	Derron	Gothart	Kitchinghan	4913225109356710	visa
+3562001696	Ray		Dilliway	3583849494251710	visa
+3562001698	Tillie	Corty	Denisot	3550166575967910	visa
+3562001700	Martha		Harnes	3557727107117620	visa
+Time taken: 0.129 seconds, Fetched: 120 row(s)
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+---------------------------2).Find the customer exceeding card limit – monthly.
+
+hive> CREATE TEMPORARY TABLE card_limit(cust_id bigint,cust_f_name varchar(40),cust_m_name varchar (40), cust_l_name varchar(40),cust_cc_no bigint,card_type varchar(40),card_limit int,total_purchase int,amount_exceeded int,remark string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+OK
+Time taken: 0.06 seconds
+hive> load data local inpath '/home/naveen/sourcelocal/Customer.csv' into table card_limit;
+Loading data to table sourcedb.card_limit
+Table sourcedb.card_limit stats: [numFiles=1, totalSize=9245]
+OK
+Time taken: 0.071 seconds
+hive> select * from card_limit;
+OK
+3562001602	Chrissie		Rayner	6334878173213670	amex	500000	NULL	567936602	Noble Embers Ridge
+3562001603	Titus		Paolozzi	3567523223820780	visa	50000	NULL	190445473	Blue Pioneer Bend
+3562001604	Jethro	Byrom	Winear	3039905356295530	amex	500000	NULL	143032108	Little Common
+3562001606	Lura		Flye	3578070062995380	visa	50000	NULL	280264513	Sleepy Quail Promenade
+3562001607	Merrill		Ratcliff	5403648817321420	master	100000	NULL	195223654	High Concession
+3562001608	Venita	Lennard	Rutgers	3547496963061990	visa	50000	NULL	531442970	Foggy Forest Plaza
+3562001610	Orbadiah		Royson	3051418309044220	amex	500000	NULL	835384343	Harvest Beacon Plaza
+3562001611	Merle		McGenn	4936290378811880	master	100000	NULL	653470680	Stony Woods
+3562001612	Fidel		Windas	3531017574361360	visa	50000	NULL	355714929	Jagged Embers By-pass
+3562001613	Beatrice		Feedome	3588589058006900	visa	50000	NULL	763905687	Iron Oak Gardens
+3562001614	Asia		Trudgion	5602256302089870	amex	500000	NULL	533779130	Hazy Pony Square
+3562001615	Nessa		Brisse	3566727575950610	visa	50000	NULL	398859724	Burning Glen
+3562001616	Cristine	Vittorio	Braxay	2017260974760290	amex	50000	NULL	585616059	Iron Port
+3562001617	Tucky		Sabbatier	3058775791217550	amex	500000	NULL	496377931	Noble Pike
+3562001621	Peg		Welbrock	3537914201882630	visa	50000	NULL	462741915	Old Willow Mall
+3562001622	Amity		Birkenshaw	3746221893451670	amex	500000	NULL	527168982	Heather Plaza
+3562001623	Marylynne	Sheff	Peddel	4913946420798260	visa	50000	NULL	726028398	Noble Embers Ridge
+3562001624	Vladamir	Augy	Hehl	6763887925070990	master	100000	NULL	854984549	Blue Pioneer Bend
+3562001626	Giacomo		Clifton	3746227754890490	amex	500000	NULL	416699493	Sleepy Quail Promenade
+3562001627	Dalila		Weatherhead	3539018736993780	visa	50000	NULL	756695602	Little Common
+3562001629	Sherlock	Vince	Woolliams	5602225917136840	amex	500000	NULL	381425374	Heather Plaza
+3562001630	Elladine	Kenneth	Dealy	6378610833616780	master	100000	NULL	522026991	Jagged Embers By-pass
+3562001631	Marlow	Deane	Seleway	3537861601381620	visa	50000	NULL	417953628	Noble Embers Ridge
+3562001634	Haywood	Cesare	Gernier	3555072384085640	visa	50000	NULL	324748675	Blue Pioneer Bend
+3562001635	Sampson		Genge	5602257512986730	amex	500000	NULL	742724564	Hazy Pony Square
+3562001636	Iggy		Wardale	3584827256597080	visa	50000	NULL	629172934	Heather Plaza
+3562001637	Lorain		Crone	4913586748929930	visa	50000	NULL	316626688	Little Common
+3562001638	Denny		Hehir	5210169439885370	master	100000	NULL	610816990	Sleepy Quail Promenade
+3562001643	Edmund		Trigg	5468084768591910	master	100000	NULL	646192779	Red Treasure Bay
+3562001649	Fawnia		Swale	5127419432105430	master	100000	NULL	531517681	Heather Plaza
+3562001650	Cristine		Juden	6334827235490350	amex	500000	NULL	551848770	Heather Plaza
+3562001651	Freeman	Bartlet	Ledeker	3574831034580740	visa	50000	NULL	403637146	Sleepy Quail Promenade
+3562001652	Gina		Massimi	3553250558494440	visa	50000	NULL	185955202	Noble Embers Ridge
+3562001654	Amil	Curr	Fawbert	5010120208028190	master	100000	NULL	490994326	Blue Pioneer Bend
+3562001661	Clarinda		Scoone	4936566808390050	master	100000	NULL	636563744	Jagged Embers By-pass
+3562001662	Reta		Nairy	2017763113611190	amex	500000	NULL	651396269	Quaking Street
+3562001664	Nessy		Royal	6334792030406340	amex	500000	NULL	639326651	Blue Pioneer Bend
+3562001667	Devlen		Pietraszek	3576170925662380	visa	50000	NULL	132925451	Little Common
+3562001674	Rhoda	Arlin	Biddles	3549138667705450	visa	50000	NULL	828832569	Foggy Forest Plaza
+3562001675	Florenza	Marwin	Tortice	3576661367312800	visa	50000	NULL	247313110	Noble Embers Ridge
+3562001676	Trumaine	Arel	Lukock	4905195125036260	master	100000	NULL	138775149	Old Willow Mall
+3562001678	Bogart	Raimund	Summersby	3041940220450330	amex	500000	NULL	580262327	Hazy Pony Square
+3562001679	Sawyer		Ismail	3547026896168710	visa	50000	NULL	519314802	Sleepy Quail Promenade
+3562001680	Nelie	Rollin	Camelin	5602250664479540	amex	500000	NULL	725510273	Burning Glen
+3562001681	Jacklin		Stango	6771126200690550	master	100000	NULL	111143799	High Concession
+3562001682	Ilario		Hadfield	6304715204316940	master	100000	NULL	469721617	Heather Plaza
+3562001683	Ruperto	Leupold	Martinez	3583060400927120	visa	50000	NULL	759211565	Quaking Street
+3562001687	Meredeth		Blaycock	6334071935110170	amex	500000	NULL	342743043	Little Common
+3562001688	Torrance		Scrowby	4607915147472950	visa	50000	NULL	727103869	Harvest Beacon Plaza
+3562001689	Berton	R
+yan	Mc Pake	5371063911268820	master	100000	NULL	338877893	Hazy Butterfly Circle
+3562001690	Sigismondo		Clever	3553276103969740	visa	50000	NULL	693722843	High Concession
+3562001691	Bidget	Curcio	Chestnutt	5602255813010240	amex	500000	NULL	310164096	Sleepy Quail Promenade
+3562001692	Layne	Isacco	Phelips	5602236760338580	amex	500000	NULL	346586073	Old Willow Mall
+3562001693	Zilvia	Raynard	Fox	5602242963853220	amex	500000	NULL	224472153	Jagged Embers By-pass
+3562001695	Derron	Gothart	Kitchinghan	4913225109356710	visa	50000	NULL	893685782	Burning Glen
+3562001696	Ray		Dilliway	3583849494251710	visa	50000	NULL	751883259	Heather Plaza
+3562001697	Ebenezer	Corty	Demanche	6759542041496280	master	100000	NULL	150789497	Harvest Beacon Plaza
+3562001698	Tillie	Corty	Denisot	3550166575967910	visa	50000	NULL	802751526	Quaking Street
+3562001699	Brig		Tompkiss	2014268557886530	amex	500000	NULL	342068735	Hazy Pony Square
+3562001700	Martha		Harnes	3557727107117620	visa	50000	NULL	327478784	Noble Embers Ridge
+Time taken: 0.079 seconds, Fetched: 60 row(s)
+-----------------------------------------------
+hive> create external table targetdb.card_limit_exceeding(cust_f_name varchar(40),cust_m_name varchar (40), cust_l_name varchar(40),cust_cc_no bigint,card_type varchar(40)) PARTITIONED BY (card_limit BIGINT) row format delimited fields terminated by ',' lines terminated by '\n' stored as parquet location '/user/hduser/credcarddb/outputdir/Card_Limit_Exceeding/';
+OK
+Time taken: 0.066 seconds
+hive> INSERT OVERWRITE TABLE TARGETDB.card_limit_exceeding PARTITION (card_limit) SELECT cust_f_name,cust_m_name,cust_l_name,cust_cc_no,card_type,card_limit FROM card_limit;
+Query ID = naveen_20220209123717_430b93a4-b50a-45dd-bbb6-0933b96d0140
+Total jobs = 3
+Launching Job 1 out of 3
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1644337620723_0022, Tracking URL = http://naveen-VirtualBox:8088/proxy/application_1644337620723_0022/
+Kill Command = /home/naveen/hadoop-2.10.1/bin/hadoop job  -kill job_1644337620723_0022
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0
+2022-02-09 12:37:22,732 Stage-1 map = 0%,  reduce = 0%
+2022-02-09 12:37:28,905 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.98 sec
+MapReduce Total cumulative CPU time: 2 seconds 980 msec
+Ended Job = job_1644337620723_0022
+Stage-4 is selected by condition resolver.
+Stage-3 is filtered out by condition resolver.
+Stage-5 is filtered out by condition resolver.
+Moving data to: hdfs://localhost:9000/user/hduser/credcarddb/outputdir/Card_Limit_Exceeding/.hive-staging_hive_2022-02-09_12-37-17_131_554019497497060153-1/-ext-10000
+Loading data to table targetdb.card_limit_exceeding partition (card_limit=null)
+	 Time taken for load dynamic partitions : 257
+	Loading partition {card_limit=100000}
+	Loading partition {card_limit=50000}
+	Loading partition {card_limit=500000}
+	 Time taken for adding to write entity : 0
+Partition targetdb.card_limit_exceeding{card_limit=100000} stats: [numFiles=1, numRows=14, totalSize=1174, rawDataSize=70]
+Partition targetdb.card_limit_exceeding{card_limit=50000} stats: [numFiles=1, numRows=27, totalSize=1651, rawDataSize=135]
+Partition targetdb.card_limit_exceeding{card_limit=500000} stats: [numFiles=1, numRows=19, totalSize=1352, rawDataSize=95]
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1   Cumulative CPU: 2.98 sec   HDFS Read: 14879 HDFS Write: 4412 SUCCESS
+Total MapReduce CPU Time Spent: 2 seconds 980 msec
+OK
+Time taken: 13.308 seconds
+hive> select * from targetdb.card_limit_exceeding;
+OK
+Merrill		Ratcliff	5403648817321420	master	100000
+Merle		McGenn	4936290378811880	master	100000
+Vladamir	Augy	Hehl	6763887925070990	master	100000
+Elladine	Kenneth	Dealy	6378610833616780	master	100000
+Denny		Hehir	5210169439885370	master	100000
+Edmund		Trigg	5468084768591910	master	100000
+Fawnia		Swale	5127419432105430	master	100000
+Amil	Curr	Fawbert	5010120208028190	master	100000
+Clarinda		Scoone	4936566808390050	master	100000
+Trumaine	Arel	Lukock	4905195125036260	master	100000
+Jacklin		Stango	6771126200690550	master	100000
+Ilario		Hadfield	6304715204316940	master	100000
+Berton	Ryan	Mc Pake	5371063911268820	master	100000
+Ebenezer	Corty	Demanche	6759542041496280	master	100000
+Titus		Paolozzi	3567523223820780	visa	50000
+Lura		Flye	3578070062995380	visa	50000
+Venita	Lennard	Rutgers	3547496963061990	visa	50000
+Fidel		Windas	3531017574361360	visa	50000
+Beatrice		Feedome	3588589058006900	visa	50000
+Nessa		Brisse	3566727575950610	visa	50000
+Cristine	Vittorio	Braxay	2017260974760290	amex	50000
+Peg		Welbrock	3537914201882630	visa	50000
+Marylynne	Sheff	Peddel	4913946420798260	visa	50000
+Dalila		Weatherhead	3539018736993780	visa	50000
+Marlow	Deane	Seleway	3537861601381620	visa	50000
+Haywood	Cesare	Gernier	3555072384085640	visa	50000
+Iggy		Wardale	3584827256597080	visa	50000
+Lorain		Crone	4913586748929930	visa	50000
+Freeman	Bartlet	Ledeker	3574831034580740	visa	50000
+Gina		Massimi	3553250558494440	visa	50000
+Devlen		Pietraszek	3576170925662380	visa	50000
+Rhoda	Arlin	Biddles	3549138667705450	visa	50000
+Florenza	Marwin	Tortice	3576661367312800	visa	50000
+Sawyer		Ismail	3547026896168710	visa	50000
+Ruperto	Leupold	Martinez	3583060400927120	visa	50000
+Torrance		Scrowby	4607915147472950	visa	50000
+Sigismondo		Clever	3553276103969740	visa	50000
+Derron	Gothart	Kitchinghan	4913225109356710	visa	50000
+Ray		Dilliway	3583849494251710	visa	50000
+Tillie	Corty	Denisot	3550166575967910	visa	50000
+Martha		Harnes	3557727107117620	visa	50000
+Chrissie		Rayner	6334878173213670	amex	500000
+Jethro	Byrom	Winear	3039905356295530	amex	500000
+Orbadiah		Royson	3051418309044220	amex	500000
+Asia		Trudgion	5602256302089870	amex	500000
+Tucky		Sabbatier	3058775791217550	amex	500000
+Amity		Birkenshaw	3746221893451670	amex	500000
+Giacomo		Clifton	3746227754890490	amex	500000
+Sherlock	Vince	Woolliams	5602225917136840	amex	500000
+Sampson		Genge	5602257512986730	amex	500000
+Cristine		Juden	6334827235490350	amex	500000
+Reta		Nairy	2017763113611190	amex	500000
+Nessy		Royal	6334792030406340	amex	500000
+Bogart	Raimund	Summersby	3041940220450330	amex	500000
+Nelie	Rollin	Camelin	5602250664479540	amex	500000
+Meredeth		Blaycock	6334071935110170	amex	500000
+Bidget	Curcio	Chestnutt	5602255813010240	amex	500000
+Layne	Isacco	Phelips	5602236760338580	amex	500000
+Zilvia	Raynard	Fox	5602242963853220	amex	500000
+Brig		Tompkiss	2014268557886530	amex	500000
+Time taken: 0.098 seconds, Fetched: 60 row(s)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------3) Categorize the Customer with “Good”, ”Normal”, ”Poor”  based on overdue  - Annual  - transaction – Sorted  Year/Month
+
+hive> insert overwrite directory '/user/hduser/credcarddb/outputdir/Tran_Count_Annual_Month' row format delimited fields terminated by ',' select t.cust_id,upper(c.cust_f_name),upper(c.cust_m_name),upper(c.cust_l_name),t.branch_code,c.cust_cc_no,upper(c.card_type),c.cust_ssn,date_format(t.tran_date,'YYYY-MMMM'),count(t.tran_id),case when count(t.tran_id)>=5 then 'GOOD' when count(t.tran_id)>=3 and count(t.tran_id)<5 then 'NORMAL' else 'POOR' end from creditcard t join customer c on t.cust_id=c.cust_id group by t.cust_id,c.cust_f_name,c.cust_m_name,c.cust_l_name,t.branch_code,c.cust_cc_no,c.cust_ssn,card_type,date_format(t.tran_date,'YYYY-MMMM');
+FAILED: SemanticException [Error 10001]: Line 1:467 Table not found 'customer'
+hive> insert overwrite directory '/user/hduser/credcarddb/outputdir/Tran_Count_Annual_Month' row format delimited fields terminated by ',' select t.cust_id,upper(c.cust_f_name),upper(c.cust_m_name),upper(c.cust_l_name),t.branch_code,c.cust_cc_no,upper(c.card_type),c.cust_ssn,date_format(t.tran_date,'YYYY-MMMM'),count(t.tran_id),case when count(t.tran_id)>=5 then 'GOOD' when count(t.tran_id)>=3 and count(t.tran_id)<5 then 'NORMAL' else 'POOR' end from creditcard t join customers c on t.cust_id=c.cust_id group by t.cust_id,c.cust_f_name,c.cust_m_name,c.cust_l_name,t.branch_code,c.cust_cc_no,c.cust_ssn,card_type,date_format(t.tran_date,'YYYY-MMMM');
+Query ID = naveen_20220209130152_dae8eec0-ba49-4672-b56a-e8831fd37e49
+Total jobs = 1
+22/02/09 13:01:55 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Execution log at: /tmp/naveen/naveen_20220209130152_dae8eec0-ba49-4672-b56a-e8831fd37e49.log
+2022-02-09 13:01:55	Starting to launch local task to process map join;	maximum memory = 477626368
+2022-02-09 13:01:56	Dump the side-table for tag: 0 with group count: 27 into file: file:/tmp/naveen/b29990ae-6d4a-4773-8f58-657576190ad0/hive_2022-02-09_13-01-52_810_2916564712603183308-1/-local-10003/HashTable-Stage-2/MapJoin-mapfile00--.hashtable
+2022-02-09 13:01:56	Uploaded 1 File to: file:/tmp/naveen/b29990ae-6d4a-4773-8f58-657576190ad0/hive_2022-02-09_13-01-52_810_2916564712603183308-1/-local-10003/HashTable-Stage-2/MapJoin-mapfile00--.hashtable (7629 bytes)
+2022-02-09 13:01:56	End of local task; Time Taken: 0.976 sec.
+Execution completed successfully
+MapredLocal task succeeded
+Launching Job 1 out of 1
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1644337620723_0023, Tracking URL = http://naveen-VirtualBox:8088/proxy/application_1644337620723_0023/
+Kill Command = /home/naveen/hadoop-2.10.1/bin/hadoop job  -kill job_1644337620723_0023
+Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+2022-02-09 13:02:02,757 Stage-2 map = 0%,  reduce = 0%
+2022-02-09 13:02:07,899 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 2.42 sec
+2022-02-09 13:02:14,043 Stage-2 map = 100%,  reduce = 100%, Cumulative CPU 5.44 sec
+MapReduce Total cumulative CPU time: 5 seconds 440 msec
+Ended Job = job_1644337620723_0023
+Moving data to: /user/hduser/credcarddb/outputdir/Tran_Count_Annual_Month
+MapReduce Jobs Launched: 
+Stage-Stage-2: Map: 1  Reduce: 1   Cumulative CPU: 5.44 sec   HDFS Read: 41451 HDFS Write: 6849 SUCCESS
+Total MapReduce CPU Time Spent: 5 seconds 440 msec
+OK
+Time taken: 22.818 seconds
+
+OUTPUT IS STORED IN CSV.FILE IN HDFS LOCALFILE AND ATTACHED IN THE  DAY WISE DOCUMENTS
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---------------------10)...All Spark processed outpu should be stored in   Hive  Target tables  as  External tables with Parquet file format 
+ ALL PARQUET FILE FORMAT SCREENSHOT ARE ATTACTHED IN DAY WISE FILE. 
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---------------------11)...All  output files should be stored in Parquet format under respective sub-folders
+  ALL OUTPUT FILE FORMAR SCREENSHOT ARE ATTACTED IN THE  DAY WISE FILE WITH RESPECTIVE FOLDERS.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---------------------12)... Please ensure that temporary table gets deleted  automatically
+        THE TEMPORARY FILE IS AUTOMATICALLY DELETED
+
+
+-------------------------------------------------------------------------------------------------------------------------------------
+

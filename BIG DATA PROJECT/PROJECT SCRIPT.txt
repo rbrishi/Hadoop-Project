@@ -1,0 +1,121 @@
+
+PROJECT -- GROUP 1
+
+                                                                                 (TOPIC)
+
+                                                                         CREDITCARD BILLING SYSTEM
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--query 1----------Refer Source Files Structure attached  in the document below and also observe the  relevant Data  available in the DATA file folder.
+----GONE THROUGH ALL DOCUMENTS PROVIDED BY THE TRAINER AND ALL THE REQUIREMENTS NEEDED FOR THE PROJECT AND DISCUSSION WITH TEAM 
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--query 2-----------Create a  local directory in  Cloudera Clone with name   Sourcelocal and  maintain all Customers, Branch and  CSV files
+-------mkdir sourcelocal
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--query 3-----------In  Hive  create Sourcedb
+------------
+       cd apache-hive-1.2.2-bin/bin
+       bash
+       hive
+       create database sourcedb;
+       show databases;
+       use sourcedb;
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--query 4 and query 5----------In Hive Sourcedb, Create Managed tables for  Customers, Branch and load the data into tables
+
+TABLE 1 CUSTOMER
+--
+CREATE TABLE CUSTOMERS(CUST_ID BIGINT,CUST_F_NAME VARCHAR(40),CUST_M_NAME VARCHAR(40),CUST_L_NAME VARCHAR(40),CUST_CC_NO BIGINT,CARD_TYPE VARCHAR(10),CARD_LIMIT BIGINT,CARD_END_DATE VARCHAR(10),CUST_SSN BIGINT,CUST_STREET VARCHAR(30),CUST_CITY VARCHAR(30),CUST_STATE VARCHAR(30),CUST_COUNTRY VARCHAR(30),CUST_ZIP VARCHAR(7),CUST_PHONE VARCHAR(15),CUST_EMAIL VARCHAR(40)) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+Load data local inpath '/home/naveen/sourcelocal/Customer.csv' into table CUSTOMERS;
+SELECT * FROM CUSTOMERS;
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+TABLE 2 BRANCH
+----
+CREATE TABLE BRANCH(BRANCH_CODE INT,BRANCH_NAME VARCHAR(20),BRANCH_STREET VARCHAR(20),BRANCH_CITY VARCHAR(20),BRANCH_STATE VARCHAR(20),BRANCH_ZIP INT,BRANCH_PHONE VARCHAR(20)) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+load data local inpath '/home/naveen/sourcelocal/Branch.csv' into table BRANCH;
+select * from BRANCH;
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--query 6---------In Hive, temporary table and  for  Creditcard table  and  load Creditcard CSV file
+
+TABLE 3 CREDITCARD
+---
+CREATE TEMPORARY TABLE CREDITCARD(TRAN_ID INT,TRAN_DATE DATE,CUST_ID BIGINT,CUST_CC_NO BIGINT,CUST_SSN BIGINT,BRANCH_CODE INT,TRAN_TYPE VARCHAR(15),TRAN_VALUE BIGINT) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+load data local inpath '/home/naveen/sourcelocal/Tran_creditcard.csv' into table CREDITCARD;
+SELECT * FROM CREDITCARD;
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--query 7 -- In Hive create Tran_CreditCard as  External  table with partitioned by YEAR & MONTH and insert the data from the temporary table in item 6Note :
+----------------
+---CREATE EXTERNAL TABLE IF NOT EXISTS TRAN_CREDITCARD(TRAN_ID INT,CUST_ID BIGINT) PARTITIONED BY (TRAN_DATE varchar(20)) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+---INSERT OVERWRITE TABLE TRAN_CREDITCARD PARTITION (TRAN_DATE) SELECT TRAN_ID,CUST_ID,TRAN_DATE FROM CREDITCARD;
+---select * from tran_creditcard;
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--query 8--In Hive create a Targetdb 
+-----------------
+-----create database targetdb;
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--query 9------- process the data as per functional requirement .
+--------
+--------------------    1)a, Generate monthly bill for a credit card number – Year & Month detailed
+
+CREATE TEMPORARY TABLE CREDITCARD(TRAN_ID INT,TRAN_DATE VARCHAR(20),CUST_ID VARCHAR(20),CUST_CC_NO VARCHAR(20),CUST_SSN VARCHAR(50),BRANCH_CODE INT,TRAN_TYPE VARCHAR(15)) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+load data local inpath '/home/naveen/sourcelocal/Tran_creditcard.csv' into table CREDITCARD;
+select * from creditcard;
+-----------------------------------------------------------------------------------------------------------------------------------------
+CREATE EXTERNAL TABLE IF NOT EXISTS TARGETDB.TRAN_CREDITCARD(TRAN_ID INT,CUST_ID varchar(20)) PARTITIONED BY (TRAN_DATE DATE) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS parquet location '/user/hduser/credcarddb/outputdir/Year_Month_Partition/';
+INSERT OVERWRITE TABLE TARGETDB.TRAN_CREDITCARD PARTITION (TRAN_DATE) SELECT TRAN_ID,CUST_ID,TRAN_DATE FROM CREDITCARD;
+select * from tran_credit;
+select tran_id,tran_date,cust_id from creditcard;
+--------------------------------------------------------------------------
+---------------------------1)b, CreditCard wise - Year – wise Month wise .  Summarized  output..
+
+CREATE TEMPORARY TABLE monthly_bill(cust_id varchar(20),cust_f_name varchar(40),cust_m_name varchar (40), cust_l_name varchar(40),cust_cc_no bigint,card_type varchar(40),tran_year int,tran_month varchar(50),bill int,remark string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+load data local inpath '/home/naveen/sourcelocal/Customer.csv' into table monthly_bill;
+select * from monthly_bill;
+------------------------------------------------------------------------------------------------------------------------------------------
+create external table targetdb.monthly_bill(cust_id bigint,cust_f_name varchar(40),cust_m_name varchar (40), cust_l_name varchar(40),cust_cc_no bigint) PARTITIONED BY(card_type varchar(50)) row format delimited fields terminated by ',' lines terminated by '\n' stored as parquet location '/user/hduser/credcarddb/outputdir/Monthly_Bill/';
+INSERT OVERWRITE TABLE TARGETDB.MONTHLY_BILL PARTITION (card_type) SELECT CUST_ID,cust_f_name,cust_m_name,cust_l_name,cust_cc_no,card_type FROM CUSTOMERS;
+select * from TARGETDB.MONTHLY_BILL;
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------     2) Find the customer exceeding card limit – monthly.
+
+CREATE TEMPORARY TABLE card_limit(cust_id bigint,cust_f_name varchar(40),cust_m_name varchar (40), cust_l_name varchar(40),cust_cc_no bigint,card_typevarchar(40),card_limit int,total_purchase int,amount_exceeded int,remark string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+load data local inpath '/home/naveen/source_local/Customer.csv' into table card_limit;
+select * from card_limit;
+----------------------------------
+create external table targetdb.card_limit_exceeding(cust_f_name varchar(40),cust_m_name varchar (40), cust_l_name varchar(40),cust_cc_no bigint,card_type varchar(40)) PARTITIONED BY (card_limit BIGINT) row format delimited fields terminated by ',' lines terminated by '\n' stored as parquet location '/user/hduser/credcarddb/outputdir/Card_Limit_Exceeding/';
+INSERT OVERWRITE TABLE TARGETDB.card_limit_exceeding PARTITION (card_limit) SELECT cust_f_name,cust_m_name,cust_l_name,cust_cc_no,card_type,card_limit FROM card_limit;
+slect * from targetdb.card_limit;
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+------------------------    3)Categorize the Customer with “Good”, ”Normal”, ”Poor”  based on overdue  - Annual  - transaction – Sorted  Year/Month
+
+insert overwrite directory '/user/hduser/credcarddb/outputdir/Tran_Count_Annual_Month' row format delimited fields terminated by ',' select t.cust_id,upper(c.cust_f_name),upper(c.cust_m_name),upper(c.cust_l_name),t.branch_code,c.cust_cc_no,upper(c.card_type),c.cust_ssn,date_format(t.tran_date,'YYYY-MMMM'),count(t.tran_id),case when count(t.tran_id)>=5 then 'GOOD' when count(t.tran_id)>=3 and count(t.tran_id)<5 then 'NORMAL' else 'POOR' end from tran_creditcard t join customer c on t.cust_id=c.cust_id group by t.cust_id,c.cust_f_name,c.cust_m_name,c.cust_l_name,t.branch_code,c.cust_cc_no,c.cust_ssn,card_type,date_format(t.tran_date,'YYYY-MMMM');
+OUTPUT IS STORED IN CSV.FILE IN HDFS LOCALFILE AND ATTACHED IN THE  DAY WISE DOCUMENTS
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ 10)......All Spark processed output should be stored in   Hive  Target tables  as  External tables with Parquet file format 
+        ALL PARQUET FILE FORMAT SCREENSHOT ARE ATTACTHED IN DAY WISE FILE. 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ 11)........All  output files should be stored in Parquet format under respective sub-folders
+        ALL OUTPUT FILE FORMAR SCREENSHOT ARE ATTACTED IN THE  DAY WISE FILE WITH RESPECTIVE FOLDERS.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ 12)....... Please ensure that temporary table gets deleted  automatically
+        THE TEMPORARY FILE IS AUTOMATICALLY DELETED
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
